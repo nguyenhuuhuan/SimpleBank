@@ -13,17 +13,19 @@ const (
 	dbDriver = "mysql"
 	// dbSource = "local:!Elnino1903@tcp(localhost:3306)/simple_bank"
 
-	dbSource = "root:secret@tcp(localhost:3356)/simple_bank"
+	dbSource = "root:secret@tcp(localhost:3356)/simple_bank?parseTime=true"
 )
 
 var testQueries *Queries
+var testDB *sql.DB
 
 func TestMain(m *testing.M) {
-	conn, err := sql.Open(dbDriver, dbSource)
+	var err error
+	testDB, err = sql.Open(dbDriver, dbSource)
 	if err != nil {
 		log.Fatal("cannot connect to dbL:", err)
 	}
-	testQueries = New(conn)
+	testQueries = New(testDB)
 	log.Output(1, "connect successfully")
 
 	os.Exit(m.Run())

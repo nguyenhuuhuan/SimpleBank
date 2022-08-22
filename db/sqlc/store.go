@@ -18,7 +18,7 @@ func NewStore(db *sql.DB) *Store {
 	}
 }
 
-func (store *Store) execTx(ctx context.Context, fn func(queries *Queries) error) error {
+func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -27,7 +27,7 @@ func (store *Store) execTx(ctx context.Context, fn func(queries *Queries) error)
 	err = fn(q)
 	if err != nil {
 		if rbErr := tx.Rollback(); rbErr != nil {
-			return fmt.Errorf("tx err: %v", err, rbErr)
+			return fmt.Errorf("tx err: %v, rb err: %v", err, rbErr)
 		}
 		return err
 	}
@@ -43,7 +43,7 @@ type TransferTxResult struct {
 	Transfer    Transfer `json:"transfer"`
 	FromAccount Account  `json:"from_account"`
 	ToAccount   Account  `json:"to_account"`
-	FromEntry   Account  `json:"from_entry"`
+	FromEntry   Entry    `json:"from_entry"`
 	ToEntry     Entry    `json:"to_entry"`
 }
 
@@ -64,12 +64,47 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		if err != nil {
 			return err
 		}
+
 		result.Transfer, err = q.GetTransfer(ctx, transferId)
 		if err != nil {
 			return err
 		}
+
+		fromEntry, err := q.CreateEntry(ctx, CreateEntryParams{
+			AccountID: arg.FromAccountID,
+			Amount:    -arg.Amount,
+		})
+		resFromEntry, err := ResultEntry(ctx, q, fromEntry)
+		if err != nil {
+			return err
+		}
+		result.FromEntry = resFromEntry.FromEntry
+
+		toEntry, err := q.CreateEntry(ctx, CreateEntryParams{
+			AccountID: arg.FromAccountID,
+			Amount:    arg.Amount,
+		})
+		resToEntry, err := ResultEntry(ctx, q, toEntry)
+		if err != nil {
+			return err
+		}
+		result.ToEntry = resToEntry.ToEntry
 		return nil
 	})
 
 	return result, err
+}
+
+func ResultEntry(ctx context.Context, q *Queries, sql sql.Result) (TransferTxResult, error) {
+	var result TransferTxResult
+	id, err := sql.LastInsertId()
+	if err != nil {
+		return result, err
+	}
+
+	result.Transfer, err = q.GetTransfer(ctx, id)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
 }
