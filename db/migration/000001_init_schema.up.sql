@@ -25,11 +25,11 @@ CREATE INDEX `accounts_index_0` ON `accounts` (`owner`);
 
 CREATE INDEX `entries_index_1` ON `entries` (`account_id`);
 
-CREATE INDEX `transfers_index_2` ON `trafers` (`from_account_id`);
+CREATE INDEX `transfers_index_2` ON `transfers` (`from_account_id`);
 
-CREATE INDEX `transfers_index_3` ON `trafers` (`to_account_id`);
+CREATE INDEX `transfers_index_3` ON `transfers` (`to_account_id`);
 
-CREATE INDEX `transfers_index_4` ON `trafers` (`from_account_id`, `to_account_id`);
+CREATE INDEX `transfers_index_4` ON `transfers` (`from_account_id`, `to_account_id`);
 
 ALTER TABLE `entries` ADD FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`);
 
