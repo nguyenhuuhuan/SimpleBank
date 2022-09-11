@@ -12,7 +12,7 @@ WHERE id = ? LIMIT 1;
 -- name: GetAccountForUpdate :one
 SELECT * FROM accounts
 WHERE id = ? LIMIT 1
-FOR NO KEY UPDATE;
+FOR UPDATE;
 
 -- name: ListAccounts :many
 SELECT * FROM accounts
@@ -22,3 +22,6 @@ OFFSET ?;
 
 -- name: UpdateAccount :execresult
 UPDATE accounts SET balance = ? where id = ?;
+
+-- name: AddAccountBalance :execresult
+UPDATE accounts SET balance = balance + sqlc.arg(amount) where id = sqlc.arg(id);

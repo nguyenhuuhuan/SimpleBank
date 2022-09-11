@@ -10,6 +10,19 @@ import (
 	"database/sql"
 )
 
+const addAccountBalance = `-- name: AddAccountBalance :execresult
+UPDATE accounts SET balance = balance + ? where id = ?
+`
+
+type AddAccountBalanceParams struct {
+	Amount int64 `json:"amount"`
+	ID     int64 `json:"id"`
+}
+
+func (q *Queries) AddAccountBalance(ctx context.Context, arg AddAccountBalanceParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, addAccountBalance, arg.Amount, arg.ID)
+}
+
 const createAccount = `-- name: CreateAccount :execresult
 INSERT INTO accounts (
   owner, balance, currency
