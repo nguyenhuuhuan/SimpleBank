@@ -33,3 +33,4 @@ test:
 sqlc:
 	.\sqlc.exe generate
 .PHONY: postgres createdb dropdb migrateup migratedown mysql_createdb mysql_dropdb mysql mysql_migrateup mysql_migratedown sqlc test
+SHELL = /bin/sh
