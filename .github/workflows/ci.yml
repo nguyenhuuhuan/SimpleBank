@@ -11,20 +11,21 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8-debian
-        env:
-          MYSQL_DATABASE: simple_bank
-          MYSQL_USER: root
-          MYSQL_PASSWORD: secret
-          MYSQL_ROOT_PASSWORD: secret
-        ports:
-          - 3356:3306
-        options: --health-cmd="mysqladmin ping" --h
     steps:
       - name: Check out code into Go module directory
       - uses: actions/checkout@v3
+
+      - uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 3356 # Optional, default value is 3306. The port of host
+          container port: 3356 # Optional, default value is 3306. The port of container
+          character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+          collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+          mysql version: 'mysql:8-debian' # Optional, default value is "latest". The version of the MySQL
+          mysql database: 'simple_bank' # Optional, default value is "test". The specified database which will be create
+          mysql root password: 'secret' # Required if "mysql user" is empty, default is empty. The root superuser password
+          mysql user: 'root' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+          mysql password: 'secret' # Required if "mysql user" exists. The password for the "mysql user"
 
       - name: Run migration
         run: make mysql_migrateup
