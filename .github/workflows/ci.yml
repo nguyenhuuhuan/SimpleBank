@@ -11,17 +11,6 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8-debian
-        env:
-          MYSQL_DATABASE: simple_bank
-          MYSQL_USER: root
-          MYSQL_PASSWORD: secret
-          MYSQL_ROOT_PASSWORD: secret
-        ports:
-          - 3356:3306
-        options: --health-cmd="mysqladmin ping" --h
     steps:
       - uses: actions/checkout@v3
 
