@@ -14,12 +14,6 @@ jobs:
     services:
       db:
         image: mysql:8-debian
-        environment:
-          MYSQL_ROOT_PASSWORD: secret
-          MYSQL_PASSWORD: secret
-          MYSQL_USER: root
-          MYSQL_DATABASE: simple_bank
-
       adminer:
         image: adminer
         ports:
