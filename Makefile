@@ -23,7 +23,7 @@ mysql_dropdb:
 	docker exec -it mysql8 mysql -uroot -psecret -e "drop database simple_bank"
 
 mysql_migrateup:
-	migrate -path db/migration -database "mysql://root:secret@tcp(localhost:3356)/simple_bank" -verbose up
+	migrate -path db/migration -database "mysql://root:secret@tcp(localhost:3306)/simple_bank" -verbose up
 
 mysql_migratedown:
 	migrate -path db/migration -database "mysql://root:secret@tcp(localhost:3356)/simple_bank" -verbose down
