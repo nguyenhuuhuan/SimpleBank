@@ -15,6 +15,8 @@ jobs:
       - name: Check out code into Go module directory
       - uses: actions/checkout@v3
 
+
+      - name: Set up MySQL
       - uses: mirromutth/mysql-action@v1.1
         with:
           host port: 3356 # Optional, default value is 3306. The port of host
