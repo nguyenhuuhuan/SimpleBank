@@ -20,7 +20,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: secret
           MYSQL_DATABASE: simple_bank
         ports:
-          - 3306:3356
+          - 3356:3356
       adminer:
         image: adminer
         ports:
